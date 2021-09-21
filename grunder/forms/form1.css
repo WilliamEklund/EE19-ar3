@@ -1,0 +1,19 @@
+div.container-sm h1{
+        margin-bottom: 40px;
+}
+
+div.container-sm{
+        margin-top: 30px;
+        width: 350px;
+}
+.form-label .form-control{
+        margin: 30px;
+}
+button.btn-primary{
+        margin-top: 30px;
+        font-size: 20px;
+        padding: 0.2em 0.35em;
+}
+div.container-sm .form-label{
+        font-size: 20px;
+}
