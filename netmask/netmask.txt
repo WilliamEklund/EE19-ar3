@@ -1,0 +1,3 @@
+ip adress: 192.168.0.1
+subnetmask: 255.255.0.0
+deafult gateway: 192.168.99.1

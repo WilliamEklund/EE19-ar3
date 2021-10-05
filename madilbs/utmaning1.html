@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <title>Utmaning 1</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+</head>
+<body>
+    <div class="kontainer">
+        <h1 class="display-4">Madlibs</h1>
+        <form action="utmaning1.php" method="POST">
+
+            <label class="form-label">Namn</label>
+            <input class="form-control" type="text" name="namn" required>
+            <label class="form-label">Adress</label>
+            <input class="form-control" type="text" name="adress" required>
+            <label class="form-label">Adjektiv</label>
+            <input class="form-control" type="text" name="adjektiv" required>
+            <label class="form-label">Verb</label>
+            <input class="form-control" type="text" name="verb" required>
+            <label class="form-label">Plural</label>
+            <input class="form-control" type="text" name="plural" required>
+
+            <button class="btn btn-primary">Skicka</button>
+
+        </form>
+    </div>
+</body>
+</html>

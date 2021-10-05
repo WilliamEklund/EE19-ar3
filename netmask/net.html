@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Netmask</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="kontainer">
+        <h1 class="display-4">Netmask</h1>
+        </nav>
+        <form class="kol2" action="backend.php" method="POST">
+            <label>Ange IP</label>
+            <input type="text" name="ip" placeholder="Tex erik12" required>
+
+            <label>Ange subnetmask</label>
+            <input type="text" name="subnet" required>
+
+            <label>Ange deafult gateway</label>
+            <input type="text" name="d_gateway" required>
+            
+            <button class="primary">Spara</button>
+        </form>
+    </div>
+</body>
+</html>
