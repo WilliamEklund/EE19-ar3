@@ -44,7 +44,6 @@
             // Skapa och spara i textfil gastbok.txt
             file_put_contents($filnamn, $texten, FILE_APPEND);
 
-
             //Bekräftelse
             echo "<p class = \"alert alert-success\">Tack för ditt meddelande</p>";
         } else {
