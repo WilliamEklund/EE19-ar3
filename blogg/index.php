@@ -19,7 +19,10 @@
             </nav>
         </header>
         <main>
-            ...
+            <?php
+           $allText = file_get_contents ("./admin/blogg.txt");
+           echo $allText;
+            ?>
         </main>
         <footer>
             Hösten 2021
