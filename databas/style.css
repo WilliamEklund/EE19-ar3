@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+
+body {
+    background: #F9F6EB;
+}
+.kontainer {
+    width: 600px;
+    padding: 2em;
+    margin: 3em auto;
+    background: #fff;
+    border-radius: 5px;
+    font-family: 'Source Sans Pro', sans-serif;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 12px #f0e9d1;
+    color: #4e4e4e;
+}
