@@ -92,7 +92,5 @@ if (!isset($_SESSION['Inloggad'])) {
             ?>
         </main>
     </div>
-
-    <script> </script>
 </body>
 </html>

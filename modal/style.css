@@ -1,0 +1,12 @@
+.container {
+}
+.container h1 {
+  margin: 1em 0.5em;
+  text-align: center;
+}
+.container button.btn-form {
+  transform: translateX(34vw);
+}
+.modal-footer {
+  justify-content: flex-start !important;
+}

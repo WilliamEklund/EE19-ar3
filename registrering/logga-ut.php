@@ -2,8 +2,11 @@
 include 'config-db.php';
 session_start();
 if (!isset($_SESSION['Inloggad'])) {
-  $_SESSION['Inloggad'] = false;
+    $_SESSION['Inloggad'] = false;
 }
+if ($_SESSION['Inloggad'] == false) {
+    header("Location: logga-in.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="sv">
@@ -17,9 +20,9 @@ if (!isset($_SESSION['Inloggad'])) {
 <body>
     <?php
     if ($_SESSION['Inloggad'] == true) {
-      echo "<p class=\"alert alert-success\"role=\"alert\"> Inloggad</p>";
+        echo "<p class=\"alert alert-success\"role=\"alert\"> Inloggad</p>";
     } else {
-      echo "<p class=\"alert alert-warning\"role=\"alert\"> Utloggad</p>";
+        echo "<p class=\"alert alert-warning\"role=\"alert\"> Utloggad</p>";
     }
     ?>
     <div class="container">
@@ -28,20 +31,20 @@ if (!isset($_SESSION['Inloggad'])) {
             <?php
             if ($_SESSION['Inloggad'] == false) {
             ?>
-               <li class="nav-item">
-                    <a class="nav-link" href="./admin.php">Admin</a>
-                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./logga-ut.php">Logga ut</a>
-                </li>
-            <?php
-            } else {
-            ?>
-              <li class="nav-item">
                     <a class="nav-link login-link active" aria-current="page" href="./logga-in.php">Logga in</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link register-link" href="./registrera.php">Registrera dig</a>
+                </li>
+            <?php
+            } else {
+            ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="./admin.php">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./logga-ut.php">Logga ut</a>
                 </li>
             <?php
             }
@@ -64,8 +67,10 @@ if (!isset($_SESSION['Inloggad'])) {
             <!-- PHP KOD -->
             <?php
             $_SESSION['Inloggad'] = false;
+            header("Location: logga-in.php");
             ?>
         </main>
+        
     </div>
 
     <script> </script>
