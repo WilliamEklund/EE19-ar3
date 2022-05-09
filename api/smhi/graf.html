@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Testar Chart.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="kontainer">
+    <h1>Prognos SMHI</h1>
+    <canvas id="myChart" width="400" height="150"></canvas>
+  </div>
+
+
+  <script>
+    let timeStamp = [];
+    let temperature = [];
+    fetch("smhi.php").then(response => response.json()).then(data => {
+      console.log(data);
+      data.forEach(el => {
+        timeStamp.push(el.label);
+        temperature.push(el.t);
+      })
+    });
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    Chart.defaults.font.size = 15;
+    const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: timeStamp,
+
+        datasets: [{
+          label: 'Prognos',
+          data: temperature,
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.2)',
+          ],
+          borderColor: [
+            'rgba(153, 102, 255, 1)',
+          ],
+          borderWidth: 1,
+          tension: 0.5
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+      }
+    });
+  </script>
+
+</body>
+
+</html>

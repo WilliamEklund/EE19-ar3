@@ -1,0 +1,10 @@
+body {
+  background-color: rgba(255, 227, 193, 0.825);
+}
+
+.container {
+  width: 35em;
+  margin: 75px auto;
+  padding: 1.6em;
+  background-color: rgba(255, 255, 255, 0.825);
+}

@@ -44,15 +44,15 @@
 
         // get specific data
         $dataValues = array(
-          $weather,
-          $description,
-          $main,
-          $temp,
-          $wind,
-          $speed,
-          $coord,
-          $lon,
-          $lat,
+            $weather,
+            $description,
+            $main,
+            $temp,
+            $wind,
+            $speed,
+            $coord,
+            $lon,
+            $lat,
         );
         ?>
     </div>
