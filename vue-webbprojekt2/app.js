@@ -1,5 +1,7 @@
+
 let app = Vue.createApp({
   data() {
+
     return {
       isBouncing: false,
       isHidden: true,
@@ -91,71 +93,99 @@ let app = Vue.createApp({
       },
       cart: {},
       LOCAL_STORAGE_KEY_CART: 'app.Cart',
-      lcCart: {},
     }
   },
+  // watcher: {
+  //   cart() {
+  //     localStorage.setItem(LOCAL_STORAGE_KEY_CART, JSON.stringify(this.cart));
+  //   }
+  // },
   computed: {
     totalPrice() {
-      totalPrice = 0;
+      let totPrice = 0;
       for (product in this.cart) {
-        console.log(product);
-        totalPrice += this.cart[product].price;
+        totPrice += this.cart[product].price;
       }
-      return totalPrice;
+
+      return totPrice;
     },
+
+    totalCart() {
+      let totAmount = 0;
+      for (product in this.cart) {
+        totAmount += this.cart[product].total;
+        console.log(totAmount);
+      }
+      return totAmount;
+    }
+
   },
   created() {
-    this.lcCart = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_KEY_CART)) || [],
-      this.cartAmount += this.lcCart.length;
-
+    this.lcCart = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_KEY_CART)) || [];
     for (product in this.lcCart) {
-      console.log(this.lcCart[product], this.cart);
+      this.cart[product] = this.lcCart[product];
+      this.cartTotal += this.lcCart[product].total;
+      console.log(this.lcCart[product].total);
+
+      $cookies.set("cart", product + " " + this.lcCart[product].total + " " + this.lcCart[product].price);
     }
+    // axios.post('ajax.php', {
+    //   request: 1,
+    // })
+    //   .then(function (response) {
+    //     this.lcCart = response.data;
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   })
+
+    // let lcCartLen;
+    // lcCartLen = (this.lcCart.length / 2);
+
+    // for (product in this.lcCart) {
+    //   console.log(this.lcCart[product]);
+    // }
 
   },
   methods: {
-
     addToCart(product) {
       this.isHidden = false;
       this.isBouncing = true;
+      this.cartAmount = this.cartCounter;
       setTimeout(() => this.isBouncing = false, 200);
       let price = parseInt(this.products[product.name].price.replace('kr', '').replaceAll(' ', ''));
       if (this.cart[product.name]) {
         this.cart[product.name].total += 1;
         this.cart[product.name].price = this.cart[product.name].total * price;
-        this.cartAmount = this.cartCounter;
       }
       else {
         this.cart[product.name] = { total: 1 };
         this.cart[product.name].price = price;
-        this.cartAmount = this.cartCounter;
       }
-      this.lcCart.push(
-        this.products[product.name],
-        this.totalPrice);
       this.saveItem();
-      // this.totalPrice += this.priceNumber;
-      //  this.cartAmount
     },
 
     removeItem(key) {
       this.cart[key].total -= 1;
-      this.cartCounter -= 1;
-      this.cartAmount -= 1;
+      $cookies.remove('tot');
+      // this.cartCounter -= 1;
+      // this.cartAmount -= 1;
       this.totalPrice -= this.cart[key].price;
+      console.log(this.cart[key].price, this.cart[key].total, this.totalPrice);
       if (this.cart[key].total === 0) {
         delete this.cart[key];
       }
 
       // this.lcCart = this.lcCart.filter((item) => item.key !== this.cart[key]);
-      this.lcCart.splice(this.lcCart.indexOf(this.cart[key]), 1);
+      // this.lcCart.splice(this.lcCart.indexOf(this.cart[key]), 1);
       this.saveItem();
     },
     saveItem() {
-      localStorage.setItem(this.LOCAL_STORAGE_KEY_CART, JSON.stringify(this.lcCart));
-      this.cartAmount = this.lcCart.length;
-      console.log(this.lcCart);
-    },
+      localStorage.setItem(this.LOCAL_STORAGE_KEY_CART, JSON.stringify(this.cart));
+    }
+
+    // console.log(this.lcCart);
+
   },
   // mounted() {
   //   if (localStorage.lcCart) {

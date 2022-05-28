@@ -1,5 +1,9 @@
 <?php
 include 'config-db.php';
+session_start();
+if (!isset($_SESSION['Inloggad'])) {
+    $_SESSION['Inloggad'] = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +14,8 @@ include 'config-db.php';
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-cookies@1.8.1/vue-cookies.js"></script>
+
     <script defer src="./app.js"> </script>
 </head>
 
@@ -44,20 +50,49 @@ include 'config-db.php';
                 <input type="text" placeholder="Vad letar du efter?" />
             </div>
             <div class="login-links">
-                <ul>
-                    <li>
-                        <a class="anchor" href="./login.php">Logga in</a>
-                    </li>
-                    <li>
-                        <a class="anchor" href="./register.php">Registrera dig</a>
-                    </li>
-                </ul>
+                <?php
+                if ($_SESSION['Inloggad'] == false) {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./register.php">Registrera dig</a>
+                        </li>
+                    </ul>
+                <?php
+                } else {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
+                        </a>
+                        </li>
+                    </ul>
+                <?php
+                }
+                ?>
             </div>
             <!-- cart icon -->
             <div class="shopping-cart" :class="{bounce: isBouncing}" @click="isHidden = !isHidden">
                 <!-- hide -->
                 <i class="bi bi-cart"></i>
-                <span class="cart-amount" v-text="cartAmount">{{cartAmount}}</span>
+                <span class="cart-amount" v-text="totalCart">{{totalCart}}</span>
                 <!-- show -->
             </div>
         </header>
@@ -68,9 +103,40 @@ include 'config-db.php';
                     <li><a class="anchor" href="#">Nytt i sortimentet</a></li>
                     <li><a class="anchor" href="./produkter.php">Produkter</a></li>
                     <li><a class="anchor" href="#">Rum</a></li>
-                    <li><a class="anchor" href="./login.php">Logga in</a></li>
-                    <li><a class="anchor" href="./register.php">Registrera dig</a></li>
+                    <?php
+                    if ($_SESSION['Inloggad'] == false) {
+                    ?>
+
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./register.php">Registrera dig</a>
+                        </li>
+
+                    <?php
+                    } else {
+                    ?>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
                 </ul>
+            <?php
+                    }
+            ?>
             </div>
         </nav>
         <div class="content-container">
@@ -120,30 +186,31 @@ include 'config-db.php';
                     </section>
                 </div>
             </div>
-            <section class="cart-modal" v-show="!isHidden">
-                <div class="close-cart-modal-wrapper">
-                    <i @click="isHidden = true" class="bi bi-x-lg close-cart-btn"></i>
-                </div>
-                <h2>Cart</h2>
-                <ul class="cart-modal-items" v-for="(value, key) in cart">
-                    <img class="cart-img" :src="products[key].imgURL" alt="key">
-                    <div class="cart-modal-list">
-                        <li>{{products[key].total}} {{value.total}}</li>
-                        <li>{{products[key].label}}</li>
-                        <li>{{products[key].category}}</li>
-                        <li>{{products[key].measure}}</li>
-                        <li>{{products[key].price}}</li>
+            <section class="cart-active" v-show="!isHidden">
+                <section class="cart-modal">
+                    <div class="close-cart-modal-wrapper">
+                        <i @click="isHidden = true" class="bi bi-x-lg close-cart-btn" :class="{isShown: true}"></i>
                     </div>
-                    <div class="remove-item-btn">
-                        <i class="bi bi-x-square remove-item-btn" @click="removeItem(key)"></i>
+                    <h2>Cart</h2>
+                    <ul class="cart-modal-items" v-for="(value, key) in cart">
+                        <img class="cart-img" :src="products[key].imgURL" alt="key">
+                        <div class="cart-modal-list">
+                            <li>{{products[key].total}} {{value.total}}</li>
+                            <li>{{products[key].label}}</li>
+                            <li>{{products[key].category}}</li>
+                            <li>{{products[key].measure}}</li>
+                            <li>{{products[key].price}}</li>
+                        </div>
+                        <div class="remove-item-btn">
+                            <i class="bi bi-x-square remove-item-btn" @click="removeItem(key)"></i>
+                        </div>
+                    </ul>
+                    <div class="cart-total">
+                        <p id="totalAmount">Antal produkter: {{totalCart}}</p>
+                        <p id="totalPrice">Totala pris: {{totalPrice}}</p>
                     </div>
-                </ul>
-                <div class="cart-total">
-                    <p>Antal produkter: {{cartAmount}}</p>
-                    <p>Totala pris: {{totalPrice}}</p>
-                </div>
+                </section>
             </section>
-
             <!-- main content -->
             <div class="items-wrapper">
                 <h1>Alla produkter</h1>
@@ -176,13 +243,11 @@ include 'config-db.php';
             </div>
         </div>
         <?php
-        //  Kod från uppgifter vi gjort
         $email = filter_input(INPUT_POST, "email");
 
         if (isset($_POST['check']) == false) {
             $message =  "<p class=\"alert alert-danger newsletter-alert\"role=\"alert\">Godkänn villkoren för att fortsätta</p>";
             echo " <section class=\"check-section\">$message</section>";
-            exit;
         }
         if (isset($_POST['check']) && $email) {
             $sql = "SELECT * FROM newsletter WHERE `email` = '$email'";
@@ -190,7 +255,6 @@ include 'config-db.php';
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 echo "<p class=\"alert alert-danger newsletter-alert\"role=\"alert\">Epost-addressen $email finns redan</p>";
-                exit;
             } else {
                 // SQL Command - Lagra i databas
                 $sql = "INSERT INTO newsletter (email) VALUES ('$email')";
@@ -201,9 +265,23 @@ include 'config-db.php';
               <p class=\"alert alert-success newsletter-alert\"role=\"success\">Registrering lyckad</p>";
                 } else {
                     echo "<p class=\"alert alert-danger newsletter-alert\"role=\"alert\">Något gick fel</p>";
-                    exit;
                 }
             }
+        }
+
+        $output = "";
+        foreach ($_COOKIE as $key => $value) {
+            // push
+            $output .= $key . $value;
+        }
+        $name = substr($output, 39, 9);
+        $amount = substr($output, 49, 1);
+        $price = substr($output, 51);
+        if ($_SESSION['Inloggad'] == true  && $amount > 0) {
+            $sql = "INSERT INTO cart (name, amount, price) VALUES ('$name', '$amount', '$price')";
+            $result = $conn->query($sql);
+        } else {
+            die;
         }
         ?>
     </div>

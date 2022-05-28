@@ -1,5 +1,9 @@
 <?php
 include 'config-db.php';
+session_start();
+if (!isset($_SESSION['Inloggad'])) {
+    $_SESSION['Inloggad'] = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +15,7 @@ include 'config-db.php';
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-cookies@1.8.1/vue-cookies.js"></script>
     <script defer src="./app.js"> </script>
 </head>
 
@@ -45,14 +50,41 @@ include 'config-db.php';
                 <input type="text" placeholder="Vad letar du efter?" />
             </div>
             <div class="login-links">
-                <ul>
-                    <li>
-                        <a class="anchor" href="./login.php">Logga in</a>
-                    </li>
-                    <li>
-                        <a class="anchor" href="./register.php">Registrera dig</a>
-                    </li>
-                </ul>
+                <?php
+                if ($_SESSION['Inloggad'] == false) {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./register.php">Registrera dig</a>
+                        </li>
+                    </ul>
+                <?php
+                } else {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
+                        </a>
+                        </li>
+                    </ul>
+                <?php
+                }
+                ?>
             </div>
             <!-- cart icon -->
             <div class="shopping-cart" :class="{bounce: isBouncing}" @click="isHidden = !isHidden">
@@ -67,11 +99,42 @@ include 'config-db.php';
             <div class="sidenav-content">
                 <ul>
                     <li><a class="anchor" href="#">Nytt i sortimentet</a></li>
-                    <li><a class="anchor" href="#">Produkter</a></li>
+                    <li><a class="anchor  activeLink" href="./produkter.php">Produkter</a></li>
                     <li><a class="anchor" href="#">Rum</a></li>
-                    <li><a class="anchor" href="./login.php">Logga in</a></li>
-                    <li><a class="anchor" href="./register.php">Registrera dig</a></li>
+                    <?php
+                    if ($_SESSION['Inloggad'] == false) {
+                    ?>
+
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor" href="./register.php">Registrera dig</a>
+                        </li>
+
+                    <?php
+                    } else {
+                    ?>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
+                        </a>
+                        </li>
                 </ul>
+            <?php
+                    }
+            ?>
             </div>
         </nav>
         <div class="content-container">
@@ -129,6 +192,21 @@ include 'config-db.php';
                 </section>
             </div>
         </div>
+        <?php
+        $output = "";
+        foreach ($_COOKIE as $key => $value) {
+            $output .= $key . $value;
+        }
+        $name = substr($output, 39, 9);
+        $amount = substr($output, 49, 1);
+        $price = substr($output, 51);
+        if ($_SESSION['Inloggad'] == true  && $amount > 0) {
+            $sql = "INSERT INTO cart (name, amount, price) VALUES ('$name', '$amount', '$price')";
+            $result = $conn->query($sql);
+        } else {
+            die;
+        }
+        ?>
     </div>
 </body>
 

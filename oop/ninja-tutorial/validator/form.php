@@ -3,11 +3,11 @@ include './oop/ninja-tutorial/validator/user-validator.php';
 $username = filter_input(INPUT_POST, "username");
 $email = filter_input(INPUT_POST, "email");
 if ($username && $email) {
-  echo "$username $email";
+    echo "$username $email";
 
-  $controll = new UserValidator($_POST);
-  $controll->validateUsername();
-  $controll->validateEmail();
+    $controll = new UserValidator($_POST);
+    $controll->validateUsername();
+    $controll->validateEmail();
 }
 ?>
 

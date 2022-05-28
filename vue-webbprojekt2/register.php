@@ -1,5 +1,9 @@
 <?php
 include 'config-db.php';
+session_start();
+if (!isset($_SESSION['Inloggad'])) {
+    $_SESSION['Inloggad'] = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +13,7 @@ include 'config-db.php';
     <title></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-cookies@1.8.1/vue-cookies.js"></script>
     <script defer src="./app.js"> </script>
     <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -42,14 +47,41 @@ include 'config-db.php';
                 <input type="text" placeholder="Vad letar du efter?" />
             </div>
             <div class="login-links">
-                <ul>
-                    <li>
-                        <a class="anchor" href="./login.php">Logga in</a>
-                    </li>
-                    <li>
-                        <a class="anchor activeLink" href="./register.php">Registrera dig</a>
-                    </li>
-                </ul>
+                <?php
+                if ($_SESSION['Inloggad'] == false) {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor activeLink" href="./register.php">Registrera dig</a>
+                        </li>
+                    </ul>
+                <?php
+                } else {
+                ?>
+                    <ul>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
+                        </a>
+                        </li>
+                    </ul>
+                <?php
+                }
+                ?>
             </div>
             <!-- cart icon -->
             <div class="shopping-cart" :class="{bounce: isBouncing}" @click="isHidden = !isHidden">
@@ -64,11 +96,42 @@ include 'config-db.php';
             <div class="sidenav-content">
                 <ul>
                     <li><a class="anchor" href="#">Nytt i sortimentet</a></li>
-                    <li><a class="anchor" href="./produkter.html">Produkter</a></li>
+                    <li><a class="anchor" href="./produkter.php">Produkter</a></li>
                     <li><a class="anchor" href="#">Rum</a></li>
-                    <li><a class="anchor" href="./login.php">Logga in</a></li>
-                    <li><a class="anchor" href="./register.php">Registrera dig</a></li>
+                    <?php
+                    if ($_SESSION['Inloggad'] == false) {
+                    ?>
+
+                        <li>
+                            <a class="anchor" href="./login.php">Logga in</a>
+                        </li>
+                        <li>
+                            <a class="anchor  activeLink" href="./register.php">Registrera dig</a>
+                        </li>
+
+                    <?php
+                    } else {
+                    ?>
+                        <li>
+                            <a class="anchor" href="#">
+                                <?php
+                                echo $_SESSION['email'];
+                                ?>
+                        <li>
+                            <a class="anchor" href="./login.php?logout=true">Logga ut</a>
+                            <?php
+                            if (isset($_GET['logout'])) {
+                                $_SESSION['Inloggad'] = false;
+                                $GET_['logout'] = false;
+                            }
+                            ?>
+                        </li>
+                        </a>
+                        </li>
                 </ul>
+            <?php
+                    }
+            ?>
             </div>
         </nav>
         <!-- CART MODAL -->
@@ -134,37 +197,34 @@ include 'config-db.php';
             $email = filter_input(INPUT_POST, "email");
             $checkPassword = filter_input(INPUT_POST, "checkPassword");
             $getPassword = filter_input(INPUT_POST, "getPassword");
+            if (isset($_POST['submit'])) {
+                if ($checkPassword != $getPassword) {
+                    echo "<p class=\"alert alert-danger\"role=\"alert\">Lösenorden matchar inte</p>";
+                    exit;
+                }
+                preg_match('/[0-9]+/', $getPassword, $matches);
+                if (sizeOf($matches) == 0) {
+                    echo "<p class=\"alert alert-danger\"role=\"alert\">Lösenordet måste innehålla minst ett nummer</p>";
+                }
 
-            if ($checkPassword != $getPassword) {
-                echo "<p class=\"alert alert-danger\"role=\"alert\">Lösenorden matchar inte</p>";
-                exit;
-            }
-            preg_match('/[0-9]+/', $getPassword, $matches);
-            if (sizeOf($matches) == 0) {
-                echo "<p class=\"alert alert-danger\"role=\"alert\">Lösenordet måste innehålla minst ett nummer</p>";
-                exit;
-            }
-            if (isset($_POST['check']) == false) {
-                echo "<p class=\"alert alert-danger\"role=\"alert\">Godkänn villkoren för att fortsätta</p>";
-                exit;
-            }
-            // if (strlen($getPassword <= 8)) {
-            //     echo strlen($getPassword);
-            //     die("<p class=\"alert alert-danger\"role=\"alert\">Lösenordet måste innehålla minst åtta tecken</p>");
-            // }
 
+                if (isset($_POST['check']) == false) {
+                    echo "<p class=\"alert alert-danger\"role=\"alert\">Godkänn villkoren för att fortsätta</p>";
+                    exit;
+                }
+            }
             if (isset($_POST['check']) && $checkPassword == $getPassword && $email) {
                 $sql = "SELECT * FROM users WHERE `email` = '$email'";
                 // RUN SQL Command
                 $result = $conn->query($sql);
                 if ($result->num_rows > 0) {
-                    echo "<p class=\"alert alert-danger\"role=\"alert\">Epost-addressen $email already exists</p>";
+                    echo "<p class=\"alert alert-danger\"role=\"alert\">Epost-addressen $email finns redan</p>";
                     exit;
                 } else {
                     // GENERERA HASH LÖSENORD
                     $hash = password_hash($getPassword, PASSWORD_DEFAULT);
                     // SQL Command - Lagra i databas
-                    $sql = "INSERT INTO users (email, password, hash) VALUES ('$email', '$getPassword', '$hash')";
+                    $sql = "INSERT INTO users (email, hash) VALUES ('$email', '$hash')";
 
                     $result = $conn->query($sql);
                     if ($result) {
@@ -175,31 +235,8 @@ include 'config-db.php';
                     }
                 }
             }
-            // class UserValidator
-            // {
-            //   private $data;
-            //   private $errors = [];
-            //   private static $fields = ['password', 'email'];
-            //   public function __construct($postData)
-            //   {
-            //     $this->data = $postData;
-            //   }
-            //   // public function validateForm()
-            //   // {
-            //   // }
-            //   public function validatepassword()
-            //   {
-            //     if (strlen($this->data['password']) < 5 || strlen($this->data['password']) > 15) {
-            //       echo "error";
-            //     }
-            //   }
-            //   public function validateEmail()
-            //   {
-            //     if (strlen($this->data['email']) < 5 || strlen($this->data['email']) > 15) {
-            //       echo "error";
-            //     }
-            //   }
-            // }
+
+
             ?>
         </section>
     </div>

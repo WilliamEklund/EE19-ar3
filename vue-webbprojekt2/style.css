@@ -157,6 +157,7 @@ li, .anchor {
 }
 
 a {
+  font-family: 'Archivo', sans-serif;
   color: #0D6EFD;
 }
 
@@ -686,8 +687,8 @@ header li {
   bottom: 0;
   margin: 5% auto;
   position: fixed;
-  -webkit-box-shadow: 1px 2px 13px 1px #141414;
-  box-shadow: 1px 2px 13px 1px #141414;
+  -webkit-box-shadow: 0px 20px 48px 28px rgba(0, 0, 0, 0.65);
+  box-shadow: 0px 20px 48px 28px rgba(0, 0, 0, 0.65);
   overflow-y: auto;
   border-radius: 6px;
 }
@@ -781,6 +782,15 @@ header li {
   flex-direction: column;
   gap: 0.5em;
   margin-left: 3em;
+}
+
+.cart-total {
+  margin: 1em;
+}
+
+.cart-total p {
+  line-height: 1.7em;
+
 }
 
 /* Register.php */
